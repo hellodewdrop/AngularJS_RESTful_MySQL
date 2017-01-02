@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Final Balance</title>
+
+        <script src="angularjs/1.4.8/angular.min.js"></script>  
+        <link rel="stylesheet" href="bootstrap/3.3.5/css/bootstrap.min.css">
+        <script src="jquery/1.11.3/jquery.min.js"></script>
+        <script src="bootstrap/3.3.5/js/bootstrap.min.js"></script>
+        <link rel="stylesheet" href="lib/w3.css">
+        <link rel="stylesheet" href="lib/w3-theme-red.css">
+
+        <link rel="stylesheet" href="bootstrap-select/bootstrap-select.min.css">
+        <script src="bootstrap-select/bootstrap-select.min.js"></script>
+
+        <script>
+            var app = angular.module("myApp", []);
+            app.controller("myCtrl", function ($scope, $http) {
+
+                //Current Assets Table
+                $http({
+                    method: "GET",
+                    url: "http://localhost:8084/Final_Balance/rest/currentAssets"
+                }).then(function mySucces(response) {
+                    $scope.currentAssetsData = response.data;
+                    console.log($scope.currentAssetsData.length);
+                }, function myError(response) {
+                    console.log("Data can't be loaded..");
+                });
+
+                //Calculation from Table
+                $scope.currentAssetsSum = function () {
+                    //return parseFloat($scope.currentAssetsData.cash_hand) + parseFloat($scope.currentAssetsData.bank_account);
+                    return $scope.currentAssetsData['cash_hand'] + $scope.currentAssetsData['bank_account'];
+                };
+
+            });
+        </script>
+
+    </head>
+    <body>
+
+        <div ng-app="myApp">
+            <div ng-controller="myCtrl" class="container">
+
+                {{currentAssetsSum()}}
+
+                <br/>
+                <br/>
+                <br/>
+                <table class="table">
+                    <tr ng-repeat="item in currentAssetsData">
+                        <td>Cash In hand</td>
+                        <td>{{item.cash_hand}}</td>
+                    </tr>
+                    <tr ng-repeat="item in currentAssetsData">
+                        <td>Bank Account</td>
+                        <td>{{item.bank_account}}</td>
+                    </tr>
+                    <tr ng-repeat="item in currentAssetsData">
+                        <th>Total</th>
+                        <th>{{item.bank_account + item.cash_hand}}</th>
+                    </tr>
+                </table>
+
+                <!-- End AngulaJS App & Container -->
+            </div>
+        </div>
+    </body>
+</html>
